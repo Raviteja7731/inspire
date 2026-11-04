@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Inspiration • Personal Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="parchment" data-font="serif">
+  <!-- Ambient Audio Indicator / Visualizer (Hidden canvas / toggle) -->
+  <div id="ambient-banner" class="ambient-banner hidden">
+    <span class="ambient-pulse"></span>
+    <span id="ambient-status-text">Playing: Gentle Rain</span>
+    <button id="btn-ambient-stop" class="btn-text-small" title="Stop Ambient Sound">✕ Stop</button>
+  </div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo">
+          <span class="logo-icon">✧</span>
+          <div class="logo-text">
+            <span class="logo-title">INSPIRE</span>
+            <span class="logo-subtitle">Personal Sanctuary</span>
+          </div>
+        </div>
+        <div class="header-date" id="header-date-display">
+          Wednesday, Nov 4, 2026
+        </div>
+      </div>
+
+      <div class="header-center">
+        <!-- Quick Nav & Today Pill -->
+        <button id="btn-today-pick" class="btn-nav-pill active-nav" title="Jump to Today's Daily Pick (Deterministic)">
+          <span class="pill-sparkle">✦</span> Today's Daily Pick
+        </button>
+        <button id="btn-browse-drawer" class="btn-nav-pill" title="Browse All Entries in Collection">
+          <span>☰</span> Browse Collection <span class="pill-count" id="badge-total-count">35</span>
+        </button>
+      </div>
+
+      <div class="header-right">
+        <!-- Ambient Sound Controls -->
+        <div class="dropdown-wrapper">
+          <button id="btn-sound-menu" class="btn-icon-label" title="Ambient Soundscape (Web Audio)">
+            <span id="sound-icon">🎧</span> <span class="hide-mobile">Ambiance</span>
+          </button>
+          <div class="dropdown-menu hidden" id="sound-dropdown">
+            <div class="dropdown-header">Ambient Soundscape</div>
+            <button class="sound-option active" data-sound="none">🔇 Silence (Off)</button>
+            <button class="sound-option" data-sound="rain">🌧️ Gentle Rain on Window</button>
+            <button class="sound-option" data-sound="hearth">🔥 Warm Cabin Fireplace</button>
+            <button class="sound-option" data-sound="chimes">🎐 Temple Wind Chimes</button>
+          </div>
+        </div>
+
+        <!-- Theme Picker -->
+        <div class="dropdown-wrapper">
+          <button id="btn-theme-menu" class="btn-icon-label" title="Switch Theme (Parchment, Midnight, Cedar, Dawn, Minimal)">
+            <span id="theme-icon">📜</span> <span class="hide-mobile">Theme</span>
+          </button>
+          <div class="dropdown-menu hidden" id="theme-dropdown">
+            <div class="dropdown-header">Color Atmosphere</div>
+            <button class="theme-option active" data-theme="parchment">📜 Warm Parchment</button>
+            <button class="theme-option" data-theme="midnight">🌌 Midnight Library</button>
+            <button class="theme-option" data-theme="cedar">🌿 Cedar & Moss</button>
+            <button class="theme-option" data-theme="dawn">🌅 Dawn Horizon</button>
+            <button class="theme-option" data-theme="minimal">⚪ Clean Studio</button>
+          </div>
+        </div>
+
+        <!-- Typography Switcher -->
+        <div class="dropdown-wrapper">
+          <button id="btn-font-menu" class="btn-icon-label" title="Font Style & Size">
+            <span>Aa</span>
+          </button>
+          <div class="dropdown-menu hidden" id="font-dropdown">
+            <div class="dropdown-header">Typography</div>
+            <button class="font-option active" data-font="serif">Lora (Editorial Serif)</button>
+            <button class="font-option" data-font="sans">Jakarta (Clean Sans)</button>
+            <button class="font-option" data-font="mono">JetBrains (Monospace)</button>
+            <div class="dropdown-divider"></div>
+            <div class="font-size-control">
+              <span>Size:</span>
+              <button id="btn-font-decrease" class="btn-small">A-</button>
+              <button id="btn-font-reset" class="btn-small">Default</button>
+              <button id="btn-font-increase" class="btn-small">A+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- New Note Button -->
+        <button id="btn-new-entry" class="btn-accent" title="Add a new quote, memory, goal, or idea">
+          <span>+</span> <span class="hide-mobile">Add Entry</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Filter Strip -->
+    <nav class="filter-strip">
+      <div class="filter-tabs">
+        <button class="filter-btn active" data-type="all">
+          All <span class="count-badge" id="count-all">35</span>
+        </button>
+        <button class="filter-btn" data-type="quote">
+          💬 Quotes <span class="count-badge" id="count-quote">10</span>
+        </button>
+        <button class="filter-btn" data-type="memory">
+          📖 Memories & Journal <span class="count-badge" id="count-memory">5</span>
+        </button>
+        <button class="filter-btn" data-type="goal">
+          🎯 Goals <span class="count-badge" id="count-goal">7</span>
+        </button>
+        <button class="filter-btn" data-type="idea">
+          💡 Ideas <span class="count-badge" id="count-idea">8</span>
+        </button>
+        <button class="filter-btn" data-type="note">
+          📝 Notes <span class="count-badge" id="count-note">5</span>
+        </button>
+        <button class="filter-btn fav-filter" data-type="favorites">
+          ❤️ Favorites <span class="count-badge" id="count-fav">2</span>
+        </button>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search your thoughts, books, tags..." autocomplete="off">
+        <button id="search-clear" class="search-clear hidden">✕</button>
+      </div>
+    </nav>
+
+    <!-- Time Capsule Notice (Dynamic: shown if items match this month or day) -->
+    <aside id="time-capsule-banner" class="time-capsule-banner hidden">
+      <span class="tc-icon">⏳</span>
+      <span class="tc-label"><strong>Time Capsule:</strong> In <span id="tc-month-name">November</span>, you reflected:</span>
+      <span id="tc-snippet" class="tc-snippet">"Three Days Offline in the Oregon Pines..."</span>
+      <button id="btn-tc-view" class="tc-action-btn">Revisit ➔</button>
+    </aside>
+
+    <!-- Main Stage / Card Area -->
+    <main class="main-stage">
+      <!-- Navigation Arrow Left -->
+      <button id="btn-prev" class="nav-arrow nav-arrow-left" title="Previous Item in History (Left Arrow)" aria-label="Previous item">
+        <span>‹</span>
+      </button>
+
+      <!-- Center Inspiration Showcase Card -->
+      <article class="inspiration-card" id="inspiration-card">
+        <!-- Card Header Info -->
+        <div class="card-meta-bar">
+          <div class="card-badges">
+            <span class="pick-badge" id="card-pick-badge">
+              <span class="badge-dot"></span> <span id="badge-text">Today's Daily Pick</span>
+            </span>
+            <span class="category-badge" id="card-category-badge">
+              <span id="card-type-icon">💬</span> <span id="card-type-text">Quote</span>
+            </span>
+          </div>
+
+          <div class="card-header-actions">
+            <!-- Favorite Toggle -->
+            <button id="btn-card-fav" class="btn-card-action fav-action" title="Toggle Favorite (F)" aria-label="Mark as favorite">
+              <svg class="heart-icon" viewBox="0 0 24 24" width="22" height="22">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              <span id="card-fav-text">Favorite</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card Core Content -->
+        <div class="card-body">
+          <div class="quote-ornament quote-open" id="quote-ornament-open">“</div>
+
+          <h2 class="card-title" id="card-title">Marcus Aurelius on the Present Moment</h2>
+
+          <div class="card-text-container" id="card-text-container">
+            <blockquote class="card-quote" id="card-quote">
+              Never let the future disturb you. You will meet it, if you have to, with the same weapons of reason which today arm you against the present.
+            </blockquote>
+          </div>
+
+          <!-- Note to Self / Reflection Callout Box -->
+          <div class="card-reflection" id="card-reflection">
+            <div class="reflection-header">
+              <span class="reflection-icon">✦</span>
+              <span class="reflection-label">Note to Self</span>
+            </div>
+            <p class="reflection-text" id="card-reflection-text">
+              Read this whenever you feel your mind spiraling into hypothetical next-month anxieties. The tools you have right now are enough.
+            </p>
+          </div>
+
+          <div class="quote-ornament quote-close" id="quote-ornament-close">”</div>
+        </div>
+
+        <!-- Card Footer / Attribution & Source -->
+        <footer class="card-footer">
+          <div class="attribution-block">
+            <div class="attribution-main">
+              <span class="author-name" id="card-author">Marcus Aurelius</span>
+              <span class="source-separator" id="card-source-sep">•</span>
+              <span class="source-title" id="card-source">Meditations (Book VII)</span>
+            </div>
+            <div class="attribution-meta">
+              <span class="date-recorded" id="card-date">Recorded: March 12, 2023</span>
+              <span class="file-crumb" id="card-file-crumb" title="Source file in this folder">
+                📁 <span id="card-file-path">quotes/timeless-reflections.md</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="card-tags" id="card-tags">
+            <span class="tag">#wisdom</span>
+            <span class="tag">#stoicism</span>
+          </div>
+        </footer>
+
+        <!-- Card Main Interactive Action Bar -->
+        <div class="card-action-bar">
+          <!-- Show Me Another Primary Button -->
+          <button id="btn-show-another" class="btn-primary-action" title="Show me another inspiration (Spacebar)">
+            <span class="action-icon">🎲</span>
+            <span class="action-text">Show Me Another</span>
+            <span class="kbd-hint">Space</span>
+          </button>
+
+          <!-- Secondary Actions -->
+          <div class="secondary-actions">
+            <button id="btn-copy-card" class="btn-secondary-action" title="Copy reflection to clipboard">
+              <span>📋</span> Copy
+            </button>
+            <button id="btn-read-aloud" class="btn-secondary-action" title="Listen / Read aloud">
+              <span id="read-aloud-icon">🔊</span> Listen
+            </button>
+            <button id="btn-share-card" class="btn-secondary-action" title="Export as quote card or share">
+              <span>↗</span> Share
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Navigation Arrow Right -->
+      <button id="btn-next" class="nav-arrow nav-arrow-right" title="Next Item in History (Right Arrow)" aria-label="Next item">
+        <span>›</span>
+      </button>
+    </main>
+
+    <!-- Bottom Status / Shortcut Bar -->
+    <footer class="app-status-bar">
+      <div class="status-left">
+        <span id="status-history-index">Item 1 of 35</span>
+        <span class="status-sep">•</span>
+        <span id="status-folder-name">Synced with local workspace</span>
+      </div>
+      <div class="status-right hide-mobile">
+        <span class="kbd-shortcut"><kbd>Space</kbd> Show another</span>
+        <span class="kbd-shortcut"><kbd>F</kbd> Favorite</span>
+        <span class="kbd-shortcut"><kbd>←</kbd> <kbd>→</kbd> History</span>
+        <span class="kbd-shortcut"><kbd>T</kbd> Theme</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- BROWSE COLLECTION DRAWER -->
+  <div id="drawer-backdrop" class="modal-backdrop hidden"></div>
+  <aside id="collection-drawer" class="collection-drawer hidden">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <h3>Your Personal Collection</h3>
+        <span class="drawer-subtitle" id="drawer-count-subtitle">35 items found in folder</span>
+      </div>
+      <button id="btn-close-drawer" class="btn-close-drawer" title="Close Drawer">✕</button>
+    </div>
+
+    <div class="drawer-filter-bar">
+      <input type="text" id="drawer-search" placeholder="Filter collection..." autocomplete="off">
+      <div class="drawer-type-pills">
+        <button class="drawer-pill active" data-drawer-type="all">All</button>
+        <button class="drawer-pill" data-drawer-type="quote">Quotes</button>
+        <button class="drawer-pill" data-drawer-type="memory">Memories</button>
+        <button class="drawer-pill" data-drawer-type="goal">Goals</button>
+        <button class="drawer-pill" data-drawer-type="idea">Ideas</button>
+        <button class="drawer-pill" data-drawer-type="favorites">❤️ Favorites</button>
+      </div>
+    </div>
+
+    <div class="drawer-list" id="drawer-list">
+      <!-- Items dynamically populated -->
+    </div>
+  </aside>
+
+  <!-- ADD NEW ENTRY MODAL -->
+  <div id="modal-backdrop" class="modal-backdrop hidden"></div>
+  <div id="new-entry-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h3 id="modal-title">Add to Your Collection</h3>
+      <button id="btn-close-modal" class="btn-close-modal" title="Close">✕</button>
+    </div>
+
+    <form id="new-entry-form" class="modal-form">
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label for="entry-type">Category *</label>
+          <select id="entry-type" required>
+            <option value="quote">💬 Quote / Resonating Words</option>
+            <option value="memory">📖 Memory / Journal Entry</option>
+            <option value="goal">🎯 Goal / Life Intention</option>
+            <option value="idea">💡 Idea / Spark of Curiosity</option>
+            <option value="note">📝 Note / Insight</option>
+          </select>
+        </div>
+
+        <div class="form-group flex-1">
+          <label for="entry-date">Date Recorded</label>
+          <input type="date" id="entry-date">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="entry-title">Title / Headline *</label>
+        <input type="text" id="entry-title" placeholder="e.g. Elena's Advice on Pacing, or Sunrise Over Mt. Tam" required>
+      </div>
+
+      <div class="form-group">
+        <label for="entry-text">Content / Words *</label>
+        <textarea id="entry-text" rows="5" placeholder="Write or paste your quote, memory, goal, or idea here..." required></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label for="entry-source">Source / Book / Context</label>
+          <input type="text" id="entry-source" placeholder="e.g. Meditations, Cabin Journal, Moleskine">
+        </div>
+
+        <div class="form-group flex-1">
+          <label for="entry-author">Author / Speaker (if quote)</label>
+          <input type="text" id="entry-author" placeholder="e.g. Marcus Aurelius, Elena, Self">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="entry-reflection">Note to Self / Reflection (Optional)</label>
+        <input type="text" id="entry-reflection" placeholder="Why does this matter? How should it guide you?">
+      </div>
+
+      <div class="form-group">
+        <label for="entry-tags">Tags (comma separated)</label>
+        <input type="text" id="entry-tags" placeholder="wisdom, mindfulness, focus, craft">
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="btn-cancel-entry" class="btn-secondary">Cancel</button>
+        <button type="submit" class="btn-primary">Save to My Collection</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast hidden">Copied to clipboard!</div>
+
+  <!-- Scripts: Fallback data bundle first, then main app -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+

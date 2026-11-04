@@ -1,0 +1,19 @@
+{
+  "name": "daily-inspiration",
+  "version": "1.0.0",
+  "description": "A daily inspiration app that surfaces quotes, memories, goals, and ideas from your personal collection.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "inspiration",
+    "journal",
+    "quotes",
+    "daily-reflection"
+  ],
+  "author": "",
+  "license": "ISC"
+}
+
